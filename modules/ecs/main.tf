@@ -6,6 +6,10 @@ data "aws_ecr_repository" "slackbot" {
   name = var.slackbot-ecr
 }
 
+data "aws_ecr_repository" "core" {
+  name = var.core-ecr
+}
+
 resource "aws_ecs_task_definition" "this" {
   family = "sessionize"
   network_mode = "host"
@@ -36,7 +40,7 @@ resource "aws_ecs_task_definition" "this" {
       cpu: 512,
       memory: 256,
       essential: true,
-      image: var.core-ecr,
+      image: data.aws_ecr_repository.core.repository_url,
       environment: [
         {
           name: "MONGODB_CONNECTION_STRING",
