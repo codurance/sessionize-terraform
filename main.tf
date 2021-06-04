@@ -33,7 +33,8 @@ module "vpc" {
 module "ecs" {
   source = "./modules/ecs"
   env = "dev"
-  app_list = ["slackbot", "core"]
+  slackbot-ecr = "sessionize-dev-slackbot"
+  core-ecr = "sessionize-dev-core"
   vpc_id = module.vpc.vpc_id
   public_subnet_ids = module.vpc.public_subnets
   private_subnet_ids = module.vpc.private_subnets

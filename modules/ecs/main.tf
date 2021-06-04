@@ -1,10 +1,9 @@
-//resource "aws_ecr_repository" "this" {
-//  count = length(var.app_list)
-//  name = "sessionize-${var.env}-${var.app_list[count.index]}"
-//}
-
 resource "aws_ecs_cluster" "this" {
   name = "sessionize-${var.env}-cluster"
+}
+
+data "aws_ecr_repository" "slackbot" {
+  name = var.slackbot-ecr
 }
 
 resource "aws_ecs_task_definition" "this" {
@@ -16,7 +15,7 @@ resource "aws_ecs_task_definition" "this" {
       cpu: 512,
       memory: 256,
       essential: true,
-      image: "${aws_ecr_repository.this[0].repository_url}:latest",
+      image: data.aws_ecr_repository.slackbot.repository_url
       environment: [
         {
           name: "SLACK_BOT_TOKEN",
@@ -37,7 +36,7 @@ resource "aws_ecs_task_definition" "this" {
       cpu: 512,
       memory: 256,
       essential: true,
-      image: "${aws_ecr_repository.this[1].repository_url}:latest",
+      image: var.core-ecr,
       environment: [
         {
           name: "MONGODB_CONNECTION_STRING",
